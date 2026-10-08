@@ -1,0 +1,22 @@
+
+  const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewMessage(e.target.value);
+    
+    if (e.target.value.trim() === '') {
+       updateDoc(doc(db, 'users', user.uid), { isTyping: false }).catch(console.error);
+       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+       return;
+    }
+
+    updateDoc(doc(db, 'users', user.uid), { isTyping: true }).catch(console.error);
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    typingTimeoutRef.current = setTimeout(() => {
+      updateDoc(doc(db, 'users', user.uid), { isTyping: false }).catch(console.error);
+    }, 2000);
+  };
+
+  const currentUserIsOwner = chatUsers.find(u => u.id === user.uid)?.isOwner;

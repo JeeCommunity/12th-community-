@@ -1,0 +1,8 @@
+{
+  "name": "Trio Chat",
+  "description": "A real-time web-based chat application for up to 3 users.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

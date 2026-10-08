@@ -1,0 +1,84 @@
+      )}
+
+      {/* Tabs */}
+      <div className="bg-white border-b border-gray-200 px-4 flex items-center gap-6 sticky top-16 z-30">
+        <button 
+          onClick={() => setActiveTab('all')}
+          className={`py-3 text-sm font-semibold border-b-2 transition-colors ${activeTab === 'all' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+        >
+          All Posts
+        </button>
+        <button 
+          onClick={() => setActiveTab('my')}
+          className={`py-3 text-sm font-semibold border-b-2 transition-colors ${activeTab === 'my' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+        >
+          My Posts
+        </button>
+      </div>
+
+      {/* Status Bar Mockup */}
+      <div className="bg-white border-b border-gray-200 px-4 py-4 flex items-center overflow-x-auto no-scrollbar">
+        <div className="flex flex-col items-center gap-1 cursor-pointer">
+          <div className="w-16 h-16 rounded-full border-2 border-dashed border-blue-400 flex items-center justify-center relative bg-gray-50 text-blue-500 hover:bg-blue-50 transition-colors">
+            <Plus size={28} className="opacity-50" />
+            <div className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-0.5 border-2 border-white">
+              <Plus size={14} />
+            </div>
+          </div>
+          <span className="text-xs text-gray-600 font-medium mt-1">Add Status</span>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <main className="flex-grow w-full max-w-3xl mx-auto p-0 sm:p-4 flex flex-col pb-24">
+        <div className="w-full flex-grow flex flex-col">
+          {loading ? (
+            <div className="flex justify-center py-10">
+              <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+            </div>
+          ) : displayedPosts.length === 0 ? (
+            <div className="bg-white p-8 rounded-xl border border-gray-200 text-center shadow-sm m-4">
+              <p className="text-gray-500">No posts found.</p>
+            </div>
+          ) : (
+            displayedPosts.map(post => (
+              <PostCard 
+                key={post.id} 
+                post={post} 
+                currentUser={currentUserProfile} usersMap={usersMap} 
+                onCommentClick={() => setActivePostId(post.id)}
+              />
+            ))
+          )}
+        </div>
+      </main>
+
+      {/* Floating Action Button */}
+      <button
+        onClick={() => setIsCreatingPost(true)}
+        className="absolute bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105 z-40"
+      >
+        <Plus size={28} />
+      </button>
+
+      {/* Create Post Modal */}
+      {isCreatingPost && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl flex flex-col overflow-hidden relative">
+            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+              <h2 className="text-lg font-bold text-gray-900">Create Post</h2>
+              <button 
+                onClick={() => setIsCreatingPost(false)}
+                className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-4">
+              <CreatePost 
+                currentUser={currentUserProfile}
+                onSuccess={() => setIsCreatingPost(false)}
+              />
+            </div>
+          </div>
+        </>

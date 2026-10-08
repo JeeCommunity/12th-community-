@@ -1,0 +1,57 @@
+{
+  "rulesVersion": "2",
+  "collections": [
+    {
+      "name": "users",
+      "path": "users/{userId}",
+      "description": "User profiles.",
+      "fields": [
+        { "name": "uid", "type": "string" },
+        { "name": "email", "type": "string" },
+        { "name": "name", "type": "string" },
+        { "name": "isOnline", "type": "boolean" },
+        { "name": "lastActive", "type": "timestamp" }
+      ],
+      "security": {
+        "read": "request.auth != null",
+        "create": "request.auth != null && request.auth.uid == userId && (get(/databases/$(database)/documents/metadata/stats).data.userCount < 3 || exists(/databases/$(database)/documents/users/$(request.auth.uid)))",
+        "update": "request.auth != null && request.auth.uid == userId",
+        "delete": "false"
+      }
+    },
+    {
+      "name": "messages",
+      "path": "messages/{messageId}",
+      "description": "Chat messages.",
+      "fields": [
+        { "name": "text", "type": "string" },
+        { "name": "imageUrl", "type": "string" },
+        { "name": "senderId", "type": "string" },
+        { "name": "senderName", "type": "string" },
+        { "name": "timestamp", "type": "timestamp" },
+        { "name": "replyTo", "type": "map" },
+        { "name": "reactions", "type": "map" }
+      ],
+      "security": {
+        "read": "request.auth != null",
+        "create": "request.auth != null && request.resource.data.senderId == request.auth.uid",
+        "update": "request.auth != null && resource.data.senderId == request.auth.uid",
+        "delete": "request.auth != null && resource.data.senderId == request.auth.uid"
+      }
+    },
+    {
+      "name": "metadata",
+      "path": "metadata/{docId}",
+      "description": "System metadata like user count.",
+      "fields": [
+        { "name": "userCount", "type": "number" }
+      ],
+      "security": {
+        "read": "request.auth != null",
+        "create": "false",
+        "update": "request.auth != null",
+        "delete": "false"
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <button id="pipBtn">Start PiP</button>
+  <video id="vid" muted autoplay playsinline style="display:none;"></video>
+  <script>
+    const btn = document.getElementById('pipBtn');
+    const video = document.getElementById('vid');
+    
+    btn.onclick = async () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 400;
+      canvas.height = 200;
+      const ctx = canvas.getContext('2d');
+      
+      let count = 0;
+      setInterval(() => {
+        ctx.fillStyle = '#111827';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 48px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`Timer: ${count++}`, 200, 100);
+      }, 1000);
+      
+      video.srcObject = canvas.captureStream(1);
+      await video.play();
+      await video.requestPictureInPicture();
+    };
+  </script>
+</body>
+</html>
